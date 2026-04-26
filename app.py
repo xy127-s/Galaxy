@@ -175,24 +175,51 @@ st.title("🛡️ 职教学生专属反诈识别系统")
 st.markdown("专为职教学生打造的轻量化文本反诈工具，一键检测兼职刷单、冒充客服、游戏诈骗等高频场景")
 st.divider()
 
-# 3. 文本输入区
+# 3. 模拟识别函数（答辩应急用，可直接运行）
+def fraud_detect(text):
+    # 关键词匹配逻辑，你之后可以替换成自己的模型
+    fraud_keywords = {
+        "刷单/兼职诈骗": ["日结", "无押金", "加微信", "刷单", "返现"],
+        "校园贷诈骗": ["低息贷款", "学生贷", "10分钟到账"],
+        "钓鱼链接诈骗": ["点击链接", "填写信息", "助学金", "更新学籍"],
+        "冒充老师诈骗": ["教材费", "转账", "指定账户"],
+        "游戏诈骗": ["低价出售", "皮肤", "先验后付"]
+    }
+
+    fraud_type = "正常文本"
+    risk_level = "低风险"
+    suggestion = "无诈骗风险，可正常沟通"
+
+    # 关键词匹配判断
+    for fraud, keywords in fraud_keywords.items():
+        if any(keyword in text for keyword in keywords):
+            fraud_type = fraud
+            risk_level = "高风险"
+            suggestion = "⚠️ 请勿相信此类信息，切勿添加陌生微信、转账汇款，谨防被骗"
+            break
+
+    return {
+        "诈骗类型": fraud_type,
+        "风险等级": risk_level,
+        "处置建议": suggestion
+    }
+
+# 4. 文本输入区
 input_text = st.text_area(
     "请输入需要检测的聊天/短信内容",
     height=180,
     placeholder="例如：「兼职刷单平台，日赚300-500元，无需押金，加微信详聊」"
 )
 
-# 4. 检测按钮 + 核心逻辑
+# 5. 检测按钮 + 核心逻辑
 if st.button("🔍 一键检测诈骗风险", type="primary", use_container_width=True):
     if not input_text.strip():
         st.warning("⚠️ 请输入需要检测的内容")
     else:
-        # 这里直接调用你已经写好的反诈识别函数
-        # 比如你的函数是def fraud_detect(text): ...
-        # 把下面这行的「你的识别函数」换成你自己的就行
-        result = 你的识别函数(input_text)
+        # 调用模拟识别函数
+        result = fraud_detect(input_text)
 
-        # 5. 结果展示区（自动根据风险等级变色）
+        # 6. 结果展示区（自动根据风险等级变色）
         st.divider()
         st.subheader("📊 检测结果")
         
